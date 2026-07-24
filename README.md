@@ -1,9 +1,9 @@
+**TEXT-IMAGE-TO-PDF-GENERATOR**
+
 <table>
 <tr>
 
 <td width="50%" valign="top">
-
-### 📌 Project Overview
 
 A modern **Django-based web application** for converting **Images** and **Text** into high-quality PDF documents with secure authentication, PDF preview, download, file history, and WebP image conversion.
 
