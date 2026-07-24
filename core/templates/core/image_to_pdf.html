@@ -1,0 +1,693 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Image to PDF | AI PDF Studio Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== IMAGE TO PDF - PREMIUM AI CONVERTER ===== */
+.converter-section {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.converter-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.converter-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.converter-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.converter-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    animation: fadeInUp 0.6s ease backwards;
+    animation-delay: 0.2s;
+}
+
+@media (max-width: 1024px) {
+    .converter-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Main Converter Card */
+.converter-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Premium Drop Zone - now with animated border glow */
+.premium-drop-zone .drop-zone-supported {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+}
+
+/* Convert Button Wrapper - for magnetic effect */
+.convert-btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+/* Result Card */
+.result-card {
+    display: none;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-top: 2rem;
+    text-align: center;
+    animation: scaleIn 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.result-card.active {
+    display: block;
+}
+
+.result-icon {
+    font-size: 4rem;
+    color: #22c55e;
+    margin-bottom: 1rem;
+    animation: bounceIn 0.6s ease;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.result-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #e2e8f0;
+}
+
+.result-info {
+    color: #94a3b8;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.download-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+}
+
+.download-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+    color: white;
+}
+
+/* History Sidebar */
+.history-sidebar {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.history-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.history-item:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateX(5px);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.history-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #60a5fa;
+    font-size: 1.2rem;
+}
+
+.history-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.history-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #e2e8f0;
+}
+
+.history-meta {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.history-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #64748b;
+}
+
+.history-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Features Grid */
+.converter-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+    animation: fadeInUp 0.6s ease backwards;
+    animation-delay: 0.3s;
+}
+
+.feature-item {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feature-item:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15);
+}
+
+.feature-item .feature-icon {
+    font-size: 2.5rem;
+    color: #3b82f6;
+    margin-bottom: 0.75rem;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.feature-item:hover .feature-icon {
+    transform: rotate(10deg) scale(1.15);
+}
+
+.feature-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    color: #e2e8f0;
+}
+
+.feature-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .converter-section {
+        padding: 1rem;
+    }
+    
+    .converter-title {
+        font-size: 2rem;
+    }
+    
+    .premium-drop-zone {
+        padding: 2rem 1.5rem !important;
+    }
+    
+    .history-sidebar {
+        position: static;
+        max-height: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .converter-title {
+        font-size: 1.5rem;
+    }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="converter-section">
+    <!-- Header -->
+    <div class="converter-header">
+        <h1 class="converter-title">🖼️ Image to PDF</h1>
+        <p class="converter-subtitle">
+            Combine multiple images into a single professional PDF document
+        </p>
+    </div>
+
+    <!-- Features -->
+    <div class="converter-features">
+        <div class="feature-item">
+            <div class="feature-icon">📄</div>
+            <div class="feature-title">Multiple Formats</div>
+            <p class="feature-desc">JPG, PNG, WebP, BMP, TIFF</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">📑</div>
+            <div class="feature-title">Multi-Page PDF</div>
+            <p class="feature-desc">Combine unlimited images</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">🎨</div>
+            <div class="feature-title">Drag & Drop</div>
+            <p class="feature-desc">Easy reordering support</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-title">Fast Conversion</div>
+            <p class="feature-desc">Instant PDF generation</p>
+        </div>
+    </div>
+
+    <div class="converter-layout">
+        <!-- Main Converter -->
+        <div class="converter-card">
+            <form method="POST" enctype="multipart/form-data" id="converterForm">
+                {% csrf_token %}
+
+                <!-- Premium Drop Zone -->
+                <div class="premium-drop-zone" id="dropZone">
+                    <i class="bi bi-cloud-upload drop-zone-icon"></i>
+                    <h3 class="drop-zone-title">Drag & Drop Images Here</h3>
+                    <p class="drop-zone-text">
+                        or <span class="drop-zone-browse" onclick="document.getElementById('fileInput').click()">browse files</span>
+                    </p>
+                    <p class="drop-zone-supported">Supports JPG, PNG, WebP, BMP, TIFF — up to 10MB per file</p>
+                    <input type="file" name="images" id="fileInput" multiple accept="image/*" style="display: none;">
+                </div>
+
+                <!-- Preview Area -->
+                <div class="preview-area" id="previewArea">
+                    <p class="file-count" id="fileCount">0 files selected</p>
+                    <div class="preview-grid" id="previewGrid"></div>
+                </div>
+
+                <!-- Convert Button - Premium -->
+                <div class="convert-btn-wrapper">
+                    <button type="submit" class="btn-convert-premium" id="convertBtn" disabled>
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        <span>Convert to PDF</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Result Card -->
+            {% if result and result.success %}
+            <div class="result-card active">
+                <div class="result-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h3 class="result-title">Conversion Complete!</h3>
+                <p class="result-info">
+                    {{ result.filename }}<br>
+                    {% if result.size > 1048576 %}
+                        {{ result.size|floatformat:0 }} MB
+                    {% elif result.size > 1024 %}
+                        {{ result.size|floatformat:0 }} KB
+                    {% else %}
+                        {{ result.size }} B
+                    {% endif %}
+                    · {{ result.pages }} page{{ result.pages|pluralize }}
+                </p>
+                <a href="{{ result.url }}" download class="download-button">
+                    <i class="bi bi-download"></i> Download PDF
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- History Sidebar -->
+        <div class="history-sidebar">
+            <h3 class="history-title">
+                <i class="bi bi-clock-history"></i>
+                Recent Conversions
+            </h3>
+            <div class="history-list">
+                {% with user_conversions=request.user.filehistory_set.all|slice:":10" %}
+                    {% for file in user_conversions %}
+                        {% if file.file_type == 'pdf' %}
+                        <div class="history-item animate-on-scroll">
+                            <div class="history-icon">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                            </div>
+                            <div class="history-info">
+                                <div class="history-name">{{ file.original_name|truncatechars:20 }}</div>
+                                <div class="history-meta">
+                                    {{ file.created_at|date:"M d, H:i" }}
+                                    {% if file.file_size %}
+                                        · {% if file.file_size > 1048576 %}
+                                            {{ file.file_size|floatformat:0 }} MB
+                                        {% elif file.file_size > 1024 %}
+                                            {{ file.file_size|floatformat:0 }} KB
+                                        {% else %}
+                                            {{ file.file_size }} B
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="history-empty">
+                            <div class="history-empty-icon">📁</div>
+                            <p>No conversions yet</p>
+                        </div>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const previewArea = document.getElementById('previewArea');
+const previewGrid = document.getElementById('previewGrid');
+const fileCount = document.getElementById('fileCount');
+const convertBtn = document.getElementById('convertBtn');
+const form = document.getElementById('converterForm');
+
+let selectedFiles = [];
+let converter = null;
+
+// Click to upload
+dropZone.addEventListener('click', () => fileInput.click());
+
+// Drag events
+['dragenter', 'dragover'].forEach(evt => {
+    dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+});
+
+['dragleave', 'drop'].forEach(evt => {
+    dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+    });
+});
+
+dropZone.addEventListener('drop', e => {
+    if (e.dataTransfer.files.length) {
+        handleFiles(e.dataTransfer.files);
+        // Particle effect on drop
+        createUploadParticles(e);
+    }
+});
+
+fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) {
+        handleFiles(fileInput.files);
+    }
+});
+
+function handleFiles(files) {
+    const allowed = ['jpg', 'jpeg', 'png', 'webp', 'bmp', 'tiff', 'tif'];
+    
+    Array.from(files).forEach(file => {
+        const ext = file.name.toLowerCase().split('.').pop();
+        
+        if (!allowed.includes(ext)) {
+            alert(`Unsupported file type: ${file.name}`);
+            return;
+        }
+        
+        if (file.size > 10 * 1024 * 1024) {
+            alert(`File too large: ${file.name} (max 10MB)`);
+            return;
+        }
+        
+        selectedFiles.push(file);
+    });
+    
+    updatePreview();
+}
+
+function updatePreview() {
+    previewGrid.innerHTML = '';
+    fileCount.textContent = `${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''} selected`;
+    
+    selectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const item = document.createElement('div');
+            item.className = 'premium-preview-item';
+            item.innerHTML = `
+                <img src="${e.target.result}" alt="${file.name}" loading="lazy">
+                <div class="preview-item-number">${index + 1}</div>
+                <button type="button" class="preview-item-remove" onclick="removeFile(${index})" aria-label="Remove ${file.name}">
+                    <i class="bi bi-x"></i>
+                </button>
+            `;
+            previewGrid.appendChild(item);
+        };
+        reader.readAsDataURL(file);
+    });
+    
+    previewArea.classList.add('active');
+    convertBtn.disabled = selectedFiles.length === 0;
+}
+
+function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    updatePreview();
+}
+
+// Create particle effect on file drop
+function createUploadParticles(event) {
+    const rect = dropZone.getBoundingClientRect();
+    const x = (event.clientX || event.touches?.[0]?.clientX || rect.left + rect.width/2) - rect.left;
+    const y = (event.clientY || event.touches?.[0]?.clientY || rect.top + rect.height/2) - rect.top;
+    
+    const colors = ['#3b82f6', '#8b5cf6', '#06b6d4', '#22c55e', '#f59e0b'];
+    
+    for (let i = 0; i < 12; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'upload-particle';
+        const angle = (i / 12) * Math.PI * 2;
+        const distance = 40 + Math.random() * 60;
+        particle.style.cssText = `
+            left: ${x}px;
+            top: ${y}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            --target-x: ${Math.cos(angle) * distance}px;
+            --target-y: ${Math.sin(angle) * distance}px;
+            animation-duration: ${0.6 + Math.random() * 0.4}s;
+        `;
+        dropZone.appendChild(particle);
+        setTimeout(() => particle.remove(), 1000);
+    }
+}
+
+// Form submit with AI conversion overlay
+form.addEventListener('submit', function(e) {
+    if (selectedFiles.length === 0) {
+        e.preventDefault();
+        return;
+    }
+    
+    e.preventDefault();
+    
+    convertBtn.disabled = true;
+    
+    // Create DataTransfer for form submission
+    const dataTransfer = new DataTransfer();
+    selectedFiles.forEach(file => dataTransfer.items.add(file));
+    fileInput.files = dataTransfer.files;
+    
+    // Show AI conversion overlay
+    converter = new PremiumConverter({
+        stages: [
+            {
+                title: 'Initializing AI Engine...',
+                subtitle: 'Neural networks booting up',
+                progress: 0,
+                duration: 1000,
+                animation: 'stage1Neural',
+            },
+            {
+                title: 'Reading Image...',
+                subtitle: 'Scanning and analyzing pixels',
+                progress: 10,
+                duration: 1500,
+                animation: 'stage2Scanner',
+            },
+            {
+                title: 'Detecting Text...',
+                subtitle: 'Processing characters',
+                progress: 25,
+                duration: 2000,
+                animation: 'stage3OCR',
+            },
+            {
+                title: 'Analyzing Layout...',
+                subtitle: 'Mapping document structure',
+                progress: 40,
+                duration: 1500,
+                animation: 'stage4Layout',
+            },
+            {
+                title: 'Optimizing Quality...',
+                subtitle: 'Enhancing clarity and sharpness',
+                progress: 55,
+                duration: 2000,
+                animation: 'stage5Quality',
+            },
+            {
+                title: 'Generating PDF...',
+                subtitle: 'Building document pages',
+                progress: 75,
+                duration: 2000,
+                animation: 'stage6PDF',
+            },
+            {
+                title: 'Compressing File...',
+                subtitle: 'Optimizing file size',
+                progress: 90,
+                duration: 1500,
+                animation: 'stage7Compress',
+            },
+            {
+                title: 'Finalizing Document...',
+                subtitle: 'Applying finishing touches',
+                progress: 100,
+                duration: 1000,
+                animation: 'stage8Finalize',
+            },
+        ],
+        onComplete: function() {
+            // Submit the form after animation
+            const realForm = document.getElementById('converterForm');
+            realForm.submit();
+        },
+        totalDuration: 12000,
+    });
+    
+    converter.start();
+});
+
+// Keyboard shortcut: Escape to clear all files
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && selectedFiles.length > 0) {
+        if (confirm('Clear all selected files?')) {
+            selectedFiles = [];
+            updatePreview();
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,706 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}File History | AI PDF Studio Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== FILE HISTORY - PREMIUM TIMELINE DESIGN ===== */
+.history-section {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.history-header {
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.history-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.history-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+/* Stats Row */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease backwards;
+    animation-delay: 0.1s;
+}
+
+.history-stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 1.5rem;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.history-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.history-stat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(59, 130, 246, 0.2);
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15);
+}
+
+.history-stat-card:hover::before {
+    opacity: 1;
+}
+
+.history-stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+    transition: transform 0.3s ease;
+}
+
+.history-stat-card:hover .history-stat-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.history-stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
+}
+
+.history-stat-label {
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Filters */
+.filters-section {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease backwards;
+    animation-delay: 0.2s;
+}
+
+.filters-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 1rem;
+    align-items: end;
+}
+
+@media (max-width: 768px) {
+    .filters-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-input,
+.filter-select {
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #e2e8f0;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.filter-button {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.filter-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(59, 130, 246, 0.35);
+}
+
+.filter-button-secondary {
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #e2e8f0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-button-secondary:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Files Section */
+.files-section {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.6s ease backwards;
+    animation-delay: 0.3s;
+}
+
+.files-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.files-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.files-count {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 400;
+}
+
+/* Modern File Cards */
+.files-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1rem;
+}
+
+.file-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 1.25rem;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.file-card:hover {
+    background: rgba(59, 130, 246, 0.05);
+    border-color: rgba(59, 130, 246, 0.2);
+    transform: translateX(5px);
+}
+
+.file-card:hover::before {
+    opacity: 1;
+}
+
+.file-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #60a5fa;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.file-card:hover .file-icon-wrapper {
+    background: rgba(59, 130, 246, 0.2);
+    transform: scale(1.1);
+}
+
+.file-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #e2e8f0;
+}
+
+.file-meta {
+    font-size: 0.85rem;
+    color: #64748b;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.file-badge {
+    padding: 0.35rem 0.875rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-pdf { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.badge-jpg, .badge-jpeg, .badge-png { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.badge-webp { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+.file-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.btn-action {
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-action:hover {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-action.view-action:hover {
+    background: #22c55e;
+    border-color: #22c55e;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.btn-action.danger:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon {
+    font-size: 5rem;
+    color: #475569;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+.empty-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #e2e8f0;
+}
+
+.empty-desc {
+    color: #64748b;
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+}
+
+/* Pagination */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pagination-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: #e2e8f0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.pagination-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.pagination-btn.active {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border-color: #3b82f6;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .history-section {
+        padding: 1rem;
+    }
+    
+    .history-title {
+        font-size: 2rem;
+    }
+    
+    .files-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .file-card {
+        padding: 1rem;
+    }
+    
+    .file-actions {
+        flex-direction: column;
+    }
+    
+    .btn-action {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="history-section">
+    <!-- Header -->
+    <div class="history-header">
+        <h1 class="history-title">📁 File History</h1>
+        <p class="history-subtitle">Manage and track all your converted files</p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-row">
+        <div class="history-stat-card">
+            <div class="history-stat-icon">
+                <i class="bi bi-files"></i>
+            </div>
+            <div class="history-stat-value">{{ total_files }}</div>
+            <div class="history-stat-label">Total Files</div>
+        </div>
+
+        <div class="history-stat-card">
+            <div class="history-stat-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">
+                <i class="bi bi-database"></i>
+            </div>
+            <div class="history-stat-value">{{ storage_display }}</div>
+            <div class="history-stat-label">Storage Used</div>
+        </div>
+
+        <div class="history-stat-card">
+            <div class="history-stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                <i class="bi bi-download"></i>
+            </div>
+            <div class="history-stat-value">{{ us.total_downloads }}</div>
+            <div class="history-stat-label">Total Downloads</div>
+        </div>
+
+        <div class="history-stat-card">
+            <div class="history-stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                <i class="bi bi-arrow-repeat"></i>
+            </div>
+            <div class="history-stat-value">{{ us.total_conversions }}</div>
+            <div class="history-stat-label">Total Conversions</div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+        <form method="GET" class="filters-row">
+            <div class="filter-group">
+                <label class="filter-label">Search Files</label>
+                <input 
+                    type="text" 
+                    name="search" 
+                    class="filter-input" 
+                    placeholder="Search by filename..."
+                    value="{{ search_query }}"
+                >
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">File Type</label>
+                <select name="type" class="filter-select">
+                    <option value="">All Types</option>
+                    <option value="pdf" {% if selected_type == 'pdf' %}selected{% endif %}>PDF</option>
+                    <option value="jpg" {% if selected_type == 'jpg' %}selected{% endif %}>JPG</option>
+                    <option value="jpeg" {% if selected_type == 'jpeg' %}selected{% endif %}>JPEG</option>
+                    <option value="png" {% if selected_type == 'png' %}selected{% endif %}>PNG</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">&nbsp;</label>
+                <button type="submit" class="filter-button">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">&nbsp;</label>
+                <a href="{% url 'file_history' %}" class="filter-button-secondary">
+                    <i class="bi bi-arrow-clockwise"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Files Grid -->
+    <div class="files-section">
+        <div class="files-header">
+            <h3 class="files-title">
+                <i class="bi bi-folder-fill"></i>
+                Your Files
+                <span class="files-count">({{ files|length }} files)</span>
+            </h3>
+        </div>
+
+        {% if files %}
+            <div class="files-grid">
+                {% for file in files %}
+                <div class="file-card animate-on-scroll">
+                    <div class="file-details">
+                        <div class="file-name">
+                            <i class="bi bi-file-earmark-{% if file.file_type == 'pdf' %}pdf{% elif file.file_type in 'jpg jpeg png' %}image{% else %}file{% endif %}"></i>
+                            {{ file.original_name|truncatechars:35 }}
+                        </div>
+                        <div class="file-meta">
+                            <span><i class="bi bi-calendar3"></i> {{ file.created_at|date:"M d, Y H:i" }}</span>
+                            <span class="file-badge badge-{{ file.file_type }}">
+                                {{ file.file_type|upper }}
+                            </span>
+                            {% if file.conversion_type %}
+                            <span class="file-badge" style="background:rgba(139,92,246,0.15);color:#a78bfa;">
+                                {{ file.conversion_type }}
+                            </span>
+                            {% endif %}
+                            {% if file.file_size %}
+                            <span><i class="bi bi-hdd"></i> {{ file.file_size|filesizeformat }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        {% if file.file and file.file.url %}
+                        <a href="{% url 'view_pdf' file.id %}" target="_blank" class="btn-action view-action" title="View PDF">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="{% url 'download_pdf' file.id %}" class="btn-action" title="Download">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                        {% endif %}
+                        <button class="btn-action danger" title="Delete" onclick="deleteFile('{{ file.id }}')">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <h3 class="empty-title">No files found</h3>
+                <p class="empty-desc">
+                    {% if search_query or selected_type %}
+                        Try adjusting your search or filter criteria
+                    {% else %}
+                        You haven't converted any files yet. Start by creating your first PDF!
+                    {% endif %}
+                </p>
+                {% if not search_query and not selected_type %}
+                    <a href="{% url 'image_to_pdf' %}" class="btn btn-gradient-primary">
+                        <i class="bi bi-plus-circle"></i> Create Your First PDF
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Delete file via AJAX
+function deleteFile(fileId) {
+    if (!confirm('Are you sure you want to delete this file from history?\n\nThis action cannot be undone.')) return;
+
+    const button = event.target.closest('button');
+    const originalIcon = button.innerHTML;
+    button.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+    button.disabled = true;
+
+    fetch("{% url 'delete_file' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'file_id=' + fileId
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            // Remove the card with animation
+            const card = button.closest('.file-card');
+            card.style.transition = 'all 0.3s ease';
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(-20px)';
+            setTimeout(() => {
+                location.reload();
+            }, 300);
+        } else {
+            button.innerHTML = originalIcon;
+            button.disabled = false;
+            alert('Failed to delete file. Please try again.');
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        button.innerHTML = originalIcon;
+        button.disabled = false;
+        alert('An error occurred. Please try again.');
+    });
+}
+
+// Auto-submit filters on change
+document.querySelectorAll('.filter-select').forEach(select => {
+    select.addEventListener('change', () => {
+        select.closest('form').submit();
+    });
+});
+
+// Clear search on escape
+document.querySelector('.filter-input')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        window.location.href = "{% url 'file_history' %}";
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,567 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Text to PDF | AI PDF Studio Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== TEXT TO PDF - PREMIUM AI CONVERTER ===== */
+.text-converter-section {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.text-converter-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.text-converter-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-converter-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.text-converter-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+    animation: fadeInUp 0.6s ease backwards;
+    animation-delay: 0.2s;
+}
+
+@media (max-width: 992px) {
+    .text-converter-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Main Card */
+.text-converter-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Text Editor */
+.text-editor-container {
+    margin-bottom: 1.5rem;
+}
+
+.text-editor-label {
+    display: block;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.text-editor {
+    width: 100%;
+    min-height: 400px;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    color: #e2e8f0;
+    font-size: 1rem;
+    line-height: 1.7;
+    font-family: 'Inter', sans-serif;
+    resize: vertical;
+    transition: all 0.3s ease;
+}
+
+.text-editor:focus {
+    outline: none;
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08), 0 0 20px rgba(59, 130, 246, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.text-editor::placeholder {
+    color: #475569;
+}
+
+/* Character Count */
+.char-count {
+    text-align: right;
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Options */
+.converter-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.option-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.option-select,
+.option-input {
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.option-select:focus,
+.option-input:focus {
+    outline: none;
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08), 0 0 20px rgba(59, 130, 246, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Convert Button */
+.text-convert-btn-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+/* Result Card */
+.text-result-card {
+    display: none;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-top: 2rem;
+    text-align: center;
+    animation: scaleIn 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.text-result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.text-result-card.active {
+    display: block;
+}
+
+/* Sidebar */
+.text-sidebar {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+}
+
+.text-sidebar-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.text-tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.text-tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: #94a3b8;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    transition: transform 0.3s ease;
+}
+
+.text-tip-item:last-child {
+    border-bottom: none;
+}
+
+.text-tip-item:hover {
+    transform: translateX(5px);
+}
+
+.text-tip-icon {
+    color: #3b82f6;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    transition: transform 0.3s ease;
+}
+
+.text-tip-item:hover .text-tip-icon {
+    transform: scale(1.2) rotate(5deg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .text-converter-section {
+        padding: 1rem;
+    }
+    
+    .text-converter-title {
+        font-size: 2rem;
+    }
+    
+    .text-converter-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .text-sidebar {
+        position: static;
+    }
+    
+    .converter-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .text-editor {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .text-converter-title {
+        font-size: 1.5rem;
+    }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="text-converter-section">
+    <!-- Header -->
+    <div class="text-converter-header">
+        <h1 class="text-converter-title">📝 Text to PDF</h1>
+        <p class="text-converter-subtitle">
+            Convert your typed text to professional PDF documents instantly
+        </p>
+    </div>
+
+    <div class="text-converter-layout">
+        <!-- Main Converter -->
+        <div class="text-converter-card">
+            <form method="POST" enctype="multipart/form-data" id="textConverterForm">
+                {% csrf_token %}
+
+                <!-- Text Editor -->
+                <div class="text-editor-container">
+                    <label class="text-editor-label">Enter Your Text</label>
+                    <textarea 
+                        name="text_content" 
+                        class="text-editor input-glow" 
+                        id="textEditor"
+                        placeholder="Type or paste your text here...
+
+You can write anything you want to convert to PDF. The text will be formatted into a professional document.
+
+Supports:
+• Plain text
+• Multiple paragraphs
+• Custom formatting
+• Font selection"
+                        required
+                    >{{ text_content|default:'' }}</textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span> characters
+                    </div>
+                </div>
+
+                <!-- Options -->
+                <div class="converter-options">
+                    <div class="option-group">
+                        <label class="option-label">Font Size</label>
+                        <select name="font_size" class="option-select">
+                            <option value="12">12px - Small</option>
+                            <option value="14" selected>14px - Medium</option>
+                            <option value="16">16px - Large</option>
+                            <option value="18">18px - Extra Large</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label class="option-label">Page Size</label>
+                        <select name="page_size" class="option-select">
+                            <option value="A4" selected>A4</option>
+                            <option value="Letter">Letter</option>
+                            <option value="Legal">Legal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Convert Button - Premium -->
+                <div class="text-convert-btn-wrapper">
+                    <button type="submit" class="btn-convert-premium" id="textConvertBtn">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        <span>Convert to PDF</span>
+                    </button>
+                </div>
+                
+                <!-- Loading Spinner (hidden by default) -->
+                <div id="textLoadingSpinner" style="display:none; text-align:center; margin-top:1rem;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Generating your PDF...</p>
+                </div>
+            </form>
+
+            <!-- Result Card (hidden by default, shown by server messages) -->
+            <div class="text-result-card" id="textResultCard">
+                <div class="result-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h3 class="result-title">PDF Generated Successfully!</h3>
+                <p class="result-info" id="resultInfo">
+                    Your PDF document has been created.
+                </p>
+                <div class="result-actions" style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+                    <a href="#" id="viewPdfBtn" target="_blank" class="btn btn-outline-primary">
+                        <i class="bi bi-eye"></i> View PDF
+                    </a>
+                    <a href="#" id="downloadPdfBtn" class="btn btn-primary" download>
+                        <i class="bi bi-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="text-sidebar">
+            <h3 class="text-sidebar-title">
+                <i class="bi bi-lightbulb"></i>
+                Tips & Features
+            </h3>
+            <ul class="text-tips-list">
+                <li class="text-tip-item">
+                    <i class="bi bi-check-circle-fill text-tip-icon"></i>
+                    <span>Type directly or paste your text</span>
+                </li>
+                <li class="text-tip-item">
+                    <i class="bi bi-check-circle-fill text-tip-icon"></i>
+                    <span>Choose from multiple font sizes</span>
+                </li>
+                <li class="text-tip-item">
+                    <i class="bi bi-check-circle-fill text-tip-icon"></i>
+                    <span>Select page size (A4, Letter, Legal)</span>
+                </li>
+                <li class="text-tip-item">
+                    <i class="bi bi-check-circle-fill text-tip-icon"></i>
+                    <span>Automatic paragraph formatting</span>
+                </li>
+                <li class="text-tip-item">
+                    <i class="bi bi-check-circle-fill text-tip-icon"></i>
+                    <span>Professional document layout</span>
+                </li>
+                <li class="text-tip-item">
+                    <i class="bi bi-check-circle-fill text-tip-icon"></i>
+                    <span>Instant PDF generation</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const textForm = document.getElementById('textConverterForm');
+const textConvertBtn = document.getElementById('textConvertBtn');
+const textEditor = document.getElementById('textEditor');
+const charCount = document.getElementById('charCount');
+let converter = null;
+
+// Auto-resize textarea
+if (textEditor) {
+    textEditor.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+        // Update character count
+        if (charCount) {
+            charCount.textContent = this.value.length;
+        }
+    });
+}
+
+// Form submit with AI conversion overlay
+textForm.addEventListener('submit', function(e) {
+    const textContent = textEditor.value.trim();
+    
+    if (!textContent) {
+        e.preventDefault();
+        showToast('Please enter some text to convert', 'error');
+        return;
+    }
+    
+    e.preventDefault();
+    textConvertBtn.disabled = true;
+    
+    // Show AI conversion overlay
+    converter = new PremiumConverter({
+        stages: [
+            {
+                title: 'Initializing AI Engine...',
+                subtitle: 'Neural networks booting up',
+                progress: 0,
+                duration: 800,
+                animation: 'stage1Neural',
+            },
+            {
+                title: 'Reading Text...',
+                subtitle: 'Analyzing content structure',
+                progress: 10,
+                duration: 1200,
+                animation: 'stage2Scanner',
+            },
+            {
+                title: 'Processing Characters...',
+                subtitle: 'Formatting and encoding text',
+                progress: 25,
+                duration: 1800,
+                animation: 'stage3OCR',
+            },
+            {
+                title: 'Analyzing Layout...',
+                subtitle: 'Building document structure',
+                progress: 40,
+                duration: 1500,
+                animation: 'stage4Layout',
+            },
+            {
+                title: 'Applying Formatting...',
+                subtitle: 'Setting fonts and styles',
+                progress: 55,
+                duration: 1500,
+                animation: 'stage5Quality',
+            },
+            {
+                title: 'Generating PDF...',
+                subtitle: 'Creating professional document',
+                progress: 75,
+                duration: 2000,
+                animation: 'stage6PDF',
+            },
+            {
+                title: 'Compressing File...',
+                subtitle: 'Optimizing for fast download',
+                progress: 90,
+                duration: 1500,
+                animation: 'stage7Compress',
+            },
+            {
+                title: 'Finalizing Document...',
+                subtitle: 'Applying finishing touches',
+                progress: 100,
+                duration: 1000,
+                animation: 'stage8Finalize',
+            },
+        ],
+        onComplete: function() {
+            // Submit the form natively
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '';
+            const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            form.innerHTML = '<input name="csrfmiddlewaretoken" value="' + csrf + '">';
+            form.innerHTML += '<input name="text_content" value="' + textEditor.value + '">';
+            form.innerHTML += '<input name="font_size" value="' + document.querySelector('[name=font_size]').value + '">';
+            form.innerHTML += '<input name="page_size" value="' + document.querySelector('[name=page_size]').value + '">';
+            document.body.appendChild(form);
+            form.submit();
+        },
+        totalDuration: 12000,
+    });
+    
+    converter.start();
+});
+
+// Toast notification helper
+function showToast(message, type = 'info') {
+    const container = document.querySelector('.messages-container');
+    if (!container) {
+        // Create container if it doesn't exist
+        const newContainer = document.createElement('div');
+        newContainer.className = 'messages-container';
+        document.body.appendChild(newContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `glass-message message-${type}`;
+    toast.innerHTML = `
+        <i class="bi bi-${type === 'success' ? 'check-circle-fill' : type === 'error' ? 'exclamation-circle-fill' : 'info-circle-fill'}"></i>
+        <span>${message}</span>
+    `;
+    
+    (document.querySelector('.messages-container') || document.body).appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideInRight 0.4s ease reverse';
+        setTimeout(() => toast.remove(), 400);
+    }, 5000);
+}
+</script>
+{% endblock %}

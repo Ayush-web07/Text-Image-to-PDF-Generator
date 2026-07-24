@@ -1,0 +1,795 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Settings | AI PDF Studio Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== SETTINGS - PREMIUM MODERN DESIGN ===== */
+.settings-section {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.settings-header {
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.settings-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.settings-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+/* Settings Layout */
+.settings-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    animation: fadeInUp 0.6s ease backwards;
+    animation-delay: 0.1s;
+}
+
+@media (max-width: 768px) {
+    .settings-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Settings Navigation */
+.settings-nav {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 1.5rem;
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.settings-nav-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+}
+
+.settings-nav-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+
+    background: none;
+    border: none;
+    outline: none;
+
+    border-radius: 12px;
+    color: #94a3b8;
+    text-decoration: none;
+    text-align: left;
+
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: inherit;
+
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+}
+
+.settings-nav-item:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #e2e8f0;
+    transform: translateX(5px);
+}
+
+.settings-nav-item.active {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.settings-nav-item i {
+    font-size: 1.1rem;
+}
+
+/* Settings Content */
+.settings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.settings-panel {
+    display: none;
+}
+
+.settings-panel.active {
+    display: block;
+    animation: fadeInUp 0.5s ease;
+}
+
+/* Section Card */
+.section-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.4s ease;
+}
+
+.section-card:hover {
+    border-color: rgba(59, 130, 246, 0.15);
+}
+
+.section-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-title i {
+    color: #3b82f6;
+}
+
+.section-description {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #e2e8f0;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    transition: var(--transition-base);
+    border-radius: 26px;
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    transition: var(--transition-base);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(22px);
+}
+
+/* Setting Item */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-info {
+    flex: 1;
+}
+
+.setting-name {
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 0.25rem;
+}
+
+.setting-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+/* Buttons */
+.btn-save {
+    padding: 0.875rem 2rem;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(59, 130, 246, 0.35);
+}
+
+.btn-danger {
+    padding: 0.875rem 2rem;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(239, 68, 68, 0.35);
+}
+
+/* Activity Item */
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #60a5fa;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.activity-icon.success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.activity-icon.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 0.25rem;
+}
+
+.activity-time {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+/* Danger Zone */
+.danger-zone {
+    border-color: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.03);
+}
+
+.danger-zone .section-title {
+    color: #f87171;
+}
+
+.danger-zone .section-title i {
+    color: #ef4444;
+}
+
+/* Alerts */
+.alert {
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: fadeInUp 0.4s ease;
+}
+
+.alert-success {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #22c55e;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
+}
+
+.alert-info {
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: #60a5fa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .settings-section {
+        padding: 1rem;
+    }
+    
+    .settings-title {
+        font-size: 2rem;
+    }
+    
+    .settings-nav {
+        position: static;
+    }
+    
+    .section-card {
+        padding: 1.5rem;
+    }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="settings-section">
+    <!-- Header -->
+    <div class="settings-header">
+        <h1 class="settings-title">⚙️ Settings</h1>
+        <p class="settings-subtitle">Manage your account and preferences</p>
+    </div>
+
+    <!-- Alerts -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        <i class="bi bi-{% if message.tags == 'success' %}check-circle-fill{% else %}exclamation-circle-fill{% endif %}"></i>
+        <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="settings-layout">
+        <!-- Settings Navigation -->
+        <div class="settings-nav">
+            <div class="settings-nav-title">
+                Settings
+            </div>
+
+        <button 
+            type="button"
+            class="settings-nav-item active"
+            data-panel="profile">
+
+            <i class="bi bi-person"></i>
+            Profile
+
+        </button>
+
+        <button
+          type="button"
+          class="settings-nav-item"
+          data-panel="appearance">
+
+          <i class="bi bi-palette"></i>
+          Appearance
+
+        </button>
+
+        <button
+          type="button"
+          class="settings-nav-item"
+          data-panel="notifications">
+
+          <i class="bi bi-bell"></i>
+          Notifications
+
+        </button>
+
+        <button
+          type="button"
+          class="settings-nav-item"
+          data-panel="security">
+
+          <i class="bi bi-shield-check"></i>
+          Security
+
+        </button>
+
+        <button
+          type="button"
+          class="settings-nav-item"
+          data-panel="danger">
+
+          <i class="bi bi-exclamation-triangle"></i>
+          Danger Zone
+
+        </button>
+
+</div>
+
+        <!-- Settings Content -->
+        <div class="settings-content">
+            <!-- Profile Panel -->
+            <div class="settings-panel active" id="panel-profile">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-person"></i>
+                            Profile Information
+                        </h2>
+                        <p class="section-description">Update your account details and public profile</p>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="profile">
+
+                        <!-- <div class="form-group">
+                            <label class="form-label">Profile Picture</label>
+                            <input type="file" name="profile_pic" class="form-input" accept="image/*">
+                        </div> -->
+
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-input" value="{{ request.user.username }}" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-input" value="{{ request.user.email }}" required>
+                        </div>
+
+                        <!-- <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-input" value="{{ request.user.first_name }}">
+                        </div> -->
+
+                        <!-- <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-input" value="{{ request.user.last_name }}">
+                        </div> -->
+
+                        <button type="submit" class="btn-save">
+                            <i class="bi bi-check-lg"></i> Save Profile
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Appearance Panel -->
+            <div class="settings-panel" id="panel-appearance">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-palette"></i>
+                            Appearance
+                        </h2>
+                        <p class="section-description">Customize how the app looks</p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="appearance">
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Dark Mode</div>
+                                <div class="setting-desc">Use dark theme across the application</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="theme" value="dark" {% if us.theme == 'dark' %}checked{% endif %}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Animations</div>
+                                <div class="setting-desc">Enable smooth animations and transitions</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="ui_animations" {% if us.ui_animations %}checked{% endif %}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-save" style="margin-top: 1.5rem;">
+                            <i class="bi bi-check-lg"></i> Save Appearance
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Notifications Panel -->
+            <div class="settings-panel" id="panel-notifications">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-bell"></i>
+                            Notifications
+                        </h2>
+                        <p class="section-description">Manage your notification preferences</p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="notifications">
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Email Notifications</div>
+                                <div class="setting-desc">Receive email updates about your account</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="email_notifications" {% if us.email_notifications %}checked{% endif %}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Conversion Complete</div>
+                                <div class="setting-desc">Get notified when conversions finish</div>
+                            </div>
+                            <label class="toggle-switch">
+                                 <input type="checkbox" name="conversion_alerts" {% if us.conversion_alerts %}checked{% endif %}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Marketing Emails</div>
+                                <div class="setting-desc">Receive updates about new features and offers</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="marketing_emails" {% if us.marketing_emails %}checked{% endif %}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Security Alerts</div>
+                                <div class="setting-desc">Get notified about suspicious activity</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="security_alerts" {% if us.security_alerts %}checked{% endif %}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Weekly Reports</div>
+                                <div class="setting-desc">Receive weekly summary of your activity</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="weekly_reports" {% if us.weekly_reports %}checked{% endif %}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-save" style="margin-top: 1.5rem;">
+                            <i class="bi bi-check-lg"></i> Save Notifications
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Panel -->
+            <div class="settings-panel" id="panel-security">
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-shield-check"></i>
+                            Security
+                        </h2>
+                        <p class="section-description">Manage your account security settings</p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="security">
+
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-name">Two-Factor Authentication</div>
+                                <div class="setting-desc">Add an extra layer of security to your account</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="two_factor_enabled" {% if us.two_factor_enabled %}checked{% endif %} disabled>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-save" style="margin-top: 1.5rem;">
+                            <i class="bi bi-check-lg"></i> Save Security Settings
+                        </button>
+                    </form>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-activity"></i>
+                            Login Activity
+                        </h2>
+                        <p class="section-description">Recent login attempts on your account</p>
+                    </div>
+
+                    {% for activity in activities %}
+                    <div class="activity-item">
+                        <div class="activity-icon {% if activity.successful %}success{% else %}danger{% endif %}">
+                            <i class="bi bi-{% if activity.successful %}check-lg{% else %}x-lg{% endif %}"></i>
+                        </div>
+                        <div class="activity-details">
+                            <div class="activity-title">
+                                {% if activity.successful %}Successful Login{% else %}Failed Attempt{% endif %}
+                            </div>
+                            <div class="activity-time">{{ activity.timestamp }} — IP: {{ activity.ip_address|default:'Unknown' }}</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p style="text-align: center; color: #64748b; padding: 2rem 0;">No recent login activity</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Danger Zone Panel -->
+            <div class="settings-panel" id="panel-danger">
+                <div class="section-card danger-zone">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Danger Zone
+                        </h2>
+                        <p class="section-description">Irreversible actions — proceed with caution</p>
+                    </div>
+
+                    <form method="POST" onsubmit="return confirm('Are you ABSOLUTELY sure? This cannot be undone!');">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="delete_account">
+                        <input type="hidden" name="confirm" value="yes">
+                        
+                        <p style="margin-bottom: 1.5rem; line-height: 1.7; color: #94a3b8;">
+                            Deleting your account will:
+                        </p>
+                        <ul style="margin-bottom: 1.5rem; line-height: 2; color: #64748b; padding-left: 1.5rem;">
+                            <li>Permanently remove all your data and files</li>
+                            <li>Delete your conversion history</li>
+                            <li>Remove your profile and settings</li>
+                            <li>This action <strong>cannot</strong> be undone</li>
+                        </ul>
+                        
+                        <button type="submit" class="btn-danger" onclick="return confirm('This will permanently delete your account. Continue?');">
+                            <i class="bi bi-trash"></i> Delete My Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/settings.js' %}"></script>
+{% endblock %}

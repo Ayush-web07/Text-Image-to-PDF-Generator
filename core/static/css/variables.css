@@ -1,0 +1,21 @@
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --success-color: #22c55e;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+
+    --background-color: #f8fafc;
+    --surface-color: #ffffff;
+
+    --text-color: #1f2937;
+    --text-light: #6b7280;
+
+    --border-color: #e5e7eb;
+
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+    --shadow-md: 0 6px 12px rgba(0,0,0,0.12);
+
+    --border-radius: 10px;
+    --transition: all 0.3s ease;
+}

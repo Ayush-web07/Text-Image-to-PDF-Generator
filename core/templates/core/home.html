@@ -1,0 +1,292 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}AI PDF Generator - Convert Images to Professional PDFs {% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/hero-premium.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<!-- ===== PREMIUM HERO SECTION ===== -->
+<section class="hero-premium" id="hero-premium">
+    <!-- Background Effects -->
+    <div class="hero-bg-effects">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+        <div class="hero-blob hero-blob-3"></div>
+        <div class="hero-noise"></div>
+        <div class="hero-stars"></div>
+    </div>
+
+    <!-- Hero Inner -->
+    <div class="hero-premium-inner">
+        <!-- Left Column -->
+        <div class="hero-left">
+            <!-- Badge -->
+            <div class="hero-badge-premium">
+                <span class="badge-icon">🤖</span>
+                <span class="badge-text">AI Powered Engine</span>
+                <span class="badge-dot"></span>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="hero-headline">
+                <span class="line">
+                    <span class="word">Convert</span>
+                    <span class="word">Images</span>
+                    <span class="word">Into</span>
+                </span>
+                <span class="line">
+                    <span class="word highlight">Professional</span>
+                    <span class="word highlight">PDFs</span>
+                </span>
+                <span class="line">
+                    <span class="word">Using</span>
+                    <span class="word highlight">AI</span>
+                    <!-- <span class="word highlight">OCR</span> -->
+                </span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="hero-subtitle-premium">
+                Upload images. Extract text instantly. Generate clean, searchable, 
+                professional PDFs powered by AI technology.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="hero-cta-group">
+                <a href="{% url 'image_to_pdf' %}" class="btn-primary-premium">
+                    Start Converting Free
+                    <span class="btn-arrow">→</span>
+                </a>
+                <a href="#features" class="btn-secondary-premium">
+                    Explore Features
+                </a>
+            </div>
+
+            <!-- Statistics -->
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">100K+</div>
+                    <div class="hero-stat-label">Images Converted</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">50K+</div>
+                    <div class="hero-stat-label">PDF Generated</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">99.9%</div>
+                    <div class="hero-stat-label">Accuracy</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">24/7</div>
+                    <div class="hero-stat-label">Cloud Processing</div>
+                </div>
+            </div>
+
+            <!-- Trusted Users -->
+            <div class="hero-trusted">
+                <div class="hero-avatar-stack">
+                    <div class="hero-avatar">JD</div>
+                    <div class="hero-avatar">AK</div>
+                    <div class="hero-avatar">MR</div>
+                    <div class="hero-avatar">SP</div>
+                    <div class="hero-avatar">+</div>
+                </div>
+                <span class="hero-trusted-text">
+                    Trusted by <strong>50,000+</strong> users worldwide
+                </span>
+            </div>
+        </div>
+
+        <!-- Right Column - 3D Scene -->
+        <div class="hero-right">
+            <div id="hero-3d-container"></div>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="hero-scroll-indicator">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- ===== FEATURE CARDS BAR ===== -->
+<div class="hero-features-bar" id="features">
+    <div class="hero-features-grid">
+        <div class="hero-feature-card">
+            <div class="hero-feature-icon">🖼️</div>
+            <div class="hero-feature-label">Upload Images</div>
+        </div>
+        <div class="hero-feature-card">
+            <div class="hero-feature-icon">📝</div>
+            <div class="hero-feature-label">Extract Text</div>
+        </div>
+        <div class="hero-feature-card">
+            <div class="hero-feature-icon">✏️</div>
+            <div class="hero-feature-label">Edit Content</div>
+        </div>
+        <div class="hero-feature-card">
+            <div class="hero-feature-icon">📄</div>
+            <div class="hero-feature-label">Generate PDF</div>
+        </div>
+        <div class="hero-feature-card">
+            <div class="hero-feature-icon">⬇️</div>
+            <div class="hero-feature-label">Download PDF</div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== FEATURES SECTION ===== -->
+<section class="features-section">
+    <div class="section-header">
+        <h2 class="section-title">Powerful Features</h2>
+        <p class="section-desc">Everything you need to manage and convert documents</p>
+    </div>
+    
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5" fill="#00E5FF"/>
+                    <path d="M21 15L16 10L5 21" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h3 class="feature-title">Image to PDF</h3>
+            <p class="feature-desc">Convert JPG, PNG, and other image formats to high-quality PDF documents with ease.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="1.5">
+                    <path d="M4 7V4H20V7" stroke-linecap="round"/>
+                    <path d="M9 20H15" stroke-linecap="round"/>
+                    <path d="M12 4V20" stroke-linecap="round"/>
+                    <path d="M4 12H20" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3 class="feature-title">Text to PDF</h3>
+            <p class="feature-desc">Create professional PDF documents from plain text with customizable formatting.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="1.5">
+                    <path d="M8 3H5C3.89543 3 3 3.89543 3 5V8" stroke-linecap="round"/>
+                    <path d="M16 3H19C20.1046 3 21 3.89543 21 5V8" stroke-linecap="round"/>
+                    <path d="M8 21H5C3.89543 21 3 20.1046 3 19V16" stroke-linecap="round"/>
+                    <path d="M16 21H19C20.1046 21 21 20.1046 21 19V16" stroke-linecap="round"/>
+                    <path d="M12 8V16" stroke-linecap="round"/>
+                    <path d="M8 12H16" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3 class="feature-title">WebP Converter</h3>
+            <p class="feature-desc">Convert WebP images to JPG or PNG format while maintaining excellent quality.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="1.5">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h3 class="feature-title">Lightning Fast</h3>
+            <p class="feature-desc">Optimized processing engine delivers conversions in seconds, not minutes.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="1.5">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke-linecap="round"/>
+                    <path d="M12 6V12L16 14" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h3 class="feature-title">Secure & Private</h3>
+            <p class="feature-desc">Your files are encrypted and automatically deleted after processing.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="1.5">
+                    <path d="M17.5 19H9C7.89543 19 7 18.1046 7 17V5C7 3.89543 7.89543 3 9 3H15L19 7V17C19 18.1046 18.1046 19 17 19H17.5Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 17C7 18.1046 7.89543 19 9 19H17" stroke-linecap="round"/>
+                    <path d="M15 3V7H19" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 12L12 14L15 11" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <h3 class="feature-title">Cloud Storage</h3>
+            <p class="feature-desc">Access your conversion history from anywhere with secure cloud storage.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA SECTION ===== -->
+<section class="cta-section">
+    <div class="cta-card">
+        <h2 class="cta-title">Ready to Get Started?</h2>
+        <p class="cta-desc">Join thousands of users who trust AI PDF Studio Pro for their document conversion needs.</p>
+        <a href="{% url 'register' %}" class="btn-primary-premium">
+            <span class="btn-text">Create Free Account</span>
+            <span class="btn-arrow">→</span>
+        </a>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="landing-footer">
+    <div class="footer-content">
+        <div class="footer-brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="4" width="16" height="16" rx="3" stroke="#00E5FF" stroke-width="1.5"/>
+                <path d="M9 12L11 14L15 10" stroke="#00E5FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            AI PDF Studio Pro
+        </div>
+        <p class="footer-desc">
+            Professional-grade PDF conversion tools powered by advanced AI technology. 
+            Fast, secure, and reliable.
+        </p>
+        <div class="footer-links">
+            <div class="footer-column">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="{% url 'image_to_pdf' %}">Image to PDF</a></li>
+                    <li><a href="{% url 'text_to_pdf' %}">Text to PDF</a></li>
+                    <li><a href="{% url 'webp_converter' %}">WebP Converter</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="{% url 'about' %}">About Us</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                    <li><a href="{% url 'careers' %}">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
+                    <li><a href="{% url 'terms' %}">Terms of Service</a></li>
+                    <li><a href="{% url 'cookies' %}">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; AI PDF Studio. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/home.js' %}"></script>
+<script src="{% static 'js/hero-premium.js' %}"></script>
+{% endblock %}

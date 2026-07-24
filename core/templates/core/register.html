@@ -1,0 +1,456 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Register | AI PDF Studio Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== REGISTER PAGE - PREMIUM AURORA DESIGN ===== */
+.register-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    overflow: hidden;
+}
+
+.register-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.register-wrapper {
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    z-index: 2;
+}
+
+.register-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+    animation: fadeUp 0.6s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.register-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8b5cf6, #ec4899, #3b82f6);
+    animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.register-logo-wrap {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.register-logo-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    color: #fff;
+    margin: 0 auto 1rem;
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.25);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 8px 32px rgba(139, 92, 246, 0.25); }
+    50% { box-shadow: 0 8px 48px rgba(139, 92, 246, 0.4); }
+}
+
+.register-logo-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.35rem;
+}
+
+.register-tagline {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+/* Error */
+.register-error {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #f87171;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+    animation: shakeX 0.5s ease;
+}
+
+@keyframes shakeX {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+}
+
+/* Form */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    z-index: 2;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.register-input {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 2.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+}
+
+.register-input:focus {
+    outline: none;
+    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.register-input::placeholder {
+    color: #475569;
+}
+
+.register-input:focus ~ .input-icon,
+.register-input:focus + .input-icon {
+    color: #a78bfa;
+}
+
+/* Password toggle */
+.password-toggle {
+    position: absolute;
+    right: 0.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.3s ease;
+    z-index: 2;
+    font-size: 1rem;
+}
+
+.password-toggle:hover {
+    color: #a78bfa;
+}
+
+/* Password strength */
+.password-strength {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.password-strength-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Button */
+.register-button {
+    width: 100%;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 24px rgba(139, 92, 246, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.register-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.register-button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.register-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.35);
+}
+
+.register-button:active {
+    transform: translateY(0);
+}
+
+/* Terms */
+.terms-text {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #475569;
+    margin-top: 1rem;
+    line-height: 1.5;
+}
+
+.terms-text a {
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.terms-text a:hover {
+    color: #94a3b8;
+    text-decoration: underline;
+}
+
+/* Footer */
+.register-footer-text {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.register-footer-text a {
+    color: #a78bfa;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.register-footer-text a:hover {
+    color: #c4b5fd;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .register-card {
+        padding: 1.75rem 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="register-section">
+    <div class="register-wrapper">
+        <div class="register-card">
+            <div class="register-logo-wrap">
+                <div class="register-logo-icon">
+                    <i class="bi bi-cpu"></i>
+                </div>
+                <div class="register-logo-name">AI PDF Studio Pro</div>
+                <p class="register-tagline">Create your free account</p>
+            </div>
+
+            {% if error %}
+            <div class="register-error">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form method="POST" class="register-form">
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        name="username" 
+                        class="register-input" 
+                        placeholder="Username"
+                        required
+                        autocomplete="username"
+                        minlength="3"
+                    >
+                    <i class="bi bi-person input-icon"></i>
+                </div>
+
+                <div class="input-group">
+                    <input 
+                        type="email" 
+                        name="email" 
+                        class="register-input" 
+                        placeholder="Email address"
+                        required
+                        autocomplete="email"
+                    >
+                    <i class="bi bi-envelope input-icon"></i>
+                </div>
+
+                <div class="input-group">
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="password"
+                        class="register-input" 
+                        placeholder="Create password"
+                        required
+                        autocomplete="new-password"
+                        minlength="6"
+                    >
+                    <i class="bi bi-lock input-icon"></i>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="bi bi-eye" id="eyeIcon"></i>
+                    </button>
+                    <div class="password-strength">
+                        <div class="password-strength-fill" id="strengthFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input 
+                        type="password" 
+                        name="confirm_password" 
+                        class="register-input" 
+                        placeholder="Confirm password"
+                        required
+                        autocomplete="new-password"
+                    >
+                    <i class="bi bi-lock-fill input-icon"></i>
+                </div>
+
+                <button type="submit" class="register-button">
+                    <i class="bi bi-person-plus"></i> Create Account
+                </button>
+            </form>
+
+            <div class="terms-text">
+                By creating an account, you agree to our 
+                <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </div>
+
+            <div class="register-footer-text">
+                Already have an account? <a href="{% url 'login' %}">Sign in</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword() {
+    const password = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    if (password.type === 'password') {
+        password.type = 'text';
+        eyeIcon.classList.remove('bi-eye');
+        eyeIcon.classList.add('bi-eye-slash');
+    } else {
+        password.type = 'password';
+        eyeIcon.classList.remove('bi-eye-slash');
+        eyeIcon.classList.add('bi-eye');
+    }
+}
+
+// Password strength indicator
+const passwordInput = document.getElementById('password');
+const strengthFill = document.getElementById('strengthFill');
+
+if (passwordInput && strengthFill) {
+    passwordInput.addEventListener('input', function() {
+        let password = this.value;
+        let strength = 0;
+        
+        if (password.length >= 6) strength++;
+        if (password.length >= 8) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        
+        let width = (strength / 5) * 100;
+        strengthFill.style.width = width + '%';
+    });
+}
+</script>
+{% endblock %}

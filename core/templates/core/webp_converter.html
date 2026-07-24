@@ -1,0 +1,860 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}WebP Converter | AI PDF Studio Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== WEBP CONVERTER - PREMIUM DESIGN ===== */
+.webp-section {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.webp-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.webp-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.webp-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.webp-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    animation: fadeInUp 0.6s ease backwards;
+    animation-delay: 0.2s;
+}
+
+@media (max-width: 1024px) {
+    .webp-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Converter Card */
+.webp-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Drop Zone */
+.webp-drop-zone {
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    background: rgba(255, 255, 255, 0.02);
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.webp-drop-zone::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.15), transparent);
+    transition: left 0.6s ease;
+}
+
+.webp-drop-zone:hover::before,
+.webp-drop-zone.dragover::before {
+    left: 100%;
+}
+
+.webp-drop-zone:hover,
+.webp-drop-zone.dragover {
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.08);
+    transform: scale(1.02);
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+}
+
+.drop-zone-icon {
+    font-size: 3.5rem;
+    color: #8b5cf6;
+    margin-bottom: 1rem;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.webp-drop-zone:hover .drop-zone-icon {
+    transform: scale(1.1) translateY(-5px);
+}
+
+.drop-zone-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #e2e8f0;
+}
+
+.drop-zone-text {
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+.drop-zone-browse {
+    color: #8b5cf6;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.drop-zone-browse:hover {
+    color: #a78bfa;
+}
+
+.drop-zone-supported {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+}
+
+/* Format Selector */
+.format-selector {
+    margin-bottom: 1.5rem;
+}
+
+.format-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+}
+
+.format-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.format-option {
+    position: relative;
+}
+
+.format-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.format-card {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.format-card:hover {
+    border-color: rgba(139, 92, 246, 0.3);
+    transform: translateY(-3px);
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.format-option input[type="radio"]:checked + .format-card {
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.format-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.format-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+    color: #e2e8f0;
+}
+
+.format-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+/* Preview */
+.preview-area {
+    display: none;
+    margin-top: 2rem;
+    animation: fadeInUp 0.5s ease;
+}
+
+.preview-area.active {
+    display: block;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 16px;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.file-info {
+    text-align: center;
+    margin-top: 1rem;
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+/* Convert Button */
+.webp-convert-button {
+    width: 100%;
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.webp-convert-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.webp-convert-button:hover:not(:disabled)::before {
+    width: 300px;
+    height: 300px;
+}
+
+.webp-convert-button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+}
+
+.webp-convert-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Spinner */
+.webp-spinner {
+    display: none;
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.webp-spinner.active {
+    display: block;
+    animation: fadeInUp 0.5s ease;
+}
+
+.spinner-ring {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #8b5cf6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1.5rem;
+}
+
+.spinner-text {
+    color: #94a3b8;
+    font-size: 1.1rem;
+}
+
+/* History Sidebar */
+.webp-history-sidebar {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.webp-history-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.webp-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.webp-history-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.webp-history-item:hover {
+    border-color: rgba(139, 92, 246, 0.3);
+    transform: translateX(5px);
+    background: rgba(139, 92, 246, 0.05);
+}
+
+.webp-history-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(139, 92, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #a78bfa;
+    font-size: 1.2rem;
+}
+
+.webp-history-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.webp-history-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #e2e8f0;
+}
+
+.webp-history-meta {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.webp-history-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #64748b;
+}
+
+.webp-history-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Features */
+.webp-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 3rem;
+    animation: fadeInUp 0.6s ease backwards;
+    animation-delay: 0.3s;
+}
+
+.webp-feature {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.4s ease;
+}
+
+.webp-feature:hover {
+    transform: translateY(-5px);
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15);
+}
+
+.webp-feature-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #a78bfa;
+    margin: 0 auto 1rem;
+    transition: all 0.4s ease;
+}
+
+.webp-feature:hover .webp-feature-icon {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25));
+    transform: scale(1.1);
+}
+
+.webp-feature-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #e2e8f0;
+}
+
+.webp-feature-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Result Card */
+.webp-result-card {
+    display: none;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-top: 2rem;
+    text-align: center;
+    animation: scaleIn 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.webp-result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.webp-result-card.active {
+    display: block;
+}
+
+.webp-result-icon {
+    font-size: 4rem;
+    color: #22c55e;
+    margin-bottom: 1rem;
+    animation: bounceIn 0.6s ease;
+}
+
+.webp-result-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #e2e8f0;
+}
+
+.webp-result-info {
+    color: #94a3b8;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.webp-download-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+}
+
+.webp-download-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .webp-section {
+        padding: 1rem;
+    }
+    
+    .webp-title {
+        font-size: 2rem;
+    }
+    
+    .webp-drop-zone {
+        padding: 2rem 1.5rem;
+    }
+    
+    .webp-history-sidebar {
+        position: static;
+        max-height: none;
+    }
+    
+    .format-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="webp-section">
+    <!-- Header -->
+    <div class="webp-header">
+        <h1 class="webp-title">🖼️ WebP Converter</h1>
+        <p class="webp-subtitle">
+            Convert WebP images to JPG or PNG format with perfect quality
+        </p>
+    </div>
+
+    <!-- Features -->
+    <div class="webp-features">
+        <div class="webp-feature">
+            <div class="webp-feature-icon">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </div>
+            <h4 class="webp-feature-title">Format Conversion</h4>
+            <p class="webp-feature-desc">Convert to JPG or PNG format</p>
+        </div>
+        <div class="webp-feature">
+            <div class="webp-feature-icon">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <h4 class="webp-feature-title">Lossless Quality</h4>
+            <p class="webp-feature-desc">Maintains original image quality</p>
+        </div>
+        <div class="webp-feature">
+            <div class="webp-feature-icon">
+                <i class="bi bi-lightning-charge"></i>
+            </div>
+            <h4 class="webp-feature-title">Fast Processing</h4>
+            <p class="webp-feature-desc">Instant conversion in seconds</p>
+        </div>
+    </div>
+
+    <div class="webp-layout">
+        <!-- Main Converter -->
+        <div class="webp-card">
+            <form method="POST" enctype="multipart/form-data" id="webpForm">
+                {% csrf_token %}
+
+                <!-- Drop Zone -->
+                <div class="webp-drop-zone" id="dropZone">
+                    <i class="bi bi-cloud-upload drop-zone-icon"></i>
+                    <h3 class="drop-zone-title">Upload WebP Image</h3>
+                    <p class="drop-zone-text">
+                        or <span class="drop-zone-browse" onclick="document.getElementById('fileInput').click()">browse files</span>
+                    </p>
+                    <p class="drop-zone-supported">Supports .webp files up to 10MB</p>
+                    <input type="file" name="image" id="fileInput" accept=".webp,image/webp" required style="display: none;">
+                </div>
+
+                {% if form.errors %}
+                <div class="alert alert-error">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}{{ error }}{% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- File Info -->
+                <div id="fileInfo" style="text-align: center; margin-bottom: 1rem; color: #94a3b8;"></div>
+
+                <!-- Preview -->
+                <div class="preview-area" id="previewArea">
+                    <img id="previewImage" class="preview-image" src="" alt="Preview">
+                    <p class="file-info" id="fileDetails"></p>
+                </div>
+
+                <!-- Format Selection -->
+                <div class="format-selector">
+                    <label class="format-label">Convert to:</label>
+                    <div class="format-options">
+                        <label class="format-option">
+                            <input type="radio" name="output_format" value="jpg" checked>
+                            <div class="format-card">
+                                <span class="format-icon">🖼️</span>
+                                <div class="format-name">JPG</div>
+                                <div class="format-desc">Smaller file size</div>
+                            </div>
+                        </label>
+                        <label class="format-option">
+                            <input type="radio" name="output_format" value="png">
+                            <div class="format-card">
+                                <span class="format-icon">✨</span>
+                                <div class="format-name">PNG</div>
+                                <div class="format-desc">Lossless quality</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Convert Button -->
+                <button type="submit" class="webp-convert-button" id="convertBtn" disabled>
+                    <i class="bi bi-arrow-repeat"></i>
+                    <span>Convert Now</span>
+                </button>
+
+                <!-- Spinner -->
+                <div class="webp-spinner" id="spinner">
+                    <div class="spinner-ring"></div>
+                    <p class="spinner-text">Converting your image...</p>
+                </div>
+            </form>
+
+            <!-- Result -->
+            {% if result and result.success %}
+            <div class="webp-result-card active">
+                <div class="webp-result-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h3 class="webp-result-title">Conversion Complete!</h3>
+                <p class="webp-result-info">
+                    {{ result.filename }}<br>
+                    {% if result.size > 1048576 %}
+                        {{ result.size|floatformat:0 }} MB
+                    {% elif result.size > 1024 %}
+                        {{ result.size|floatformat:0 }} KB
+                    {% else %}
+                        {{ result.size }} B
+                    {% endif %}
+                    · {{ result.format }}
+                </p>
+                <a href="{{ result.url }}" download class="webp-download-button">
+                    <i class="bi bi-download"></i> Download {{ result.format }}
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- History Sidebar -->
+        <div class="webp-history-sidebar">
+            <h3 class="webp-history-title">
+                <i class="bi bi-clock-history"></i>
+                Recent Conversions
+            </h3>
+            <div class="webp-history-list">
+                {% with user_conversions=request.user.filehistory_set.all|slice:":10" %}
+                    {% for file in user_conversions %}
+                        {% if file.file_type == 'jpg' or file.file_type == 'png' %}
+                        <div class="webp-history-item">
+                            <div class="webp-history-icon">
+                                <i class="bi bi-filetype-{{ file.file_type }}"></i>
+                            </div>
+                            <div class="webp-history-info">
+                                <div class="webp-history-name">{{ file.original_name|truncatechars:20 }}</div>
+                                <div class="webp-history-meta">
+                                    {{ file.created_at|date:"M d, H:i" }}
+                                    {% if file.file_size %}
+                                        · {% if file.file_size > 1048576 %}
+                                            {{ file.file_size|floatformat:0 }} MB
+                                        {% elif file.file_size > 1024 %}
+                                            {{ file.file_size|floatformat:0 }} KB
+                                        {% else %}
+                                            {{ file.file_size }} B
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="webp-history-empty">
+                            <div class="webp-history-empty-icon">📁</div>
+                            <p>No conversions yet</p>
+                        </div>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const fileInfo = document.getElementById('fileInfo');
+const previewArea = document.getElementById('previewArea');
+const previewImage = document.getElementById('previewImage');
+const fileDetails = document.getElementById('fileDetails');
+const convertBtn = document.getElementById('convertBtn');
+const spinner = document.getElementById('spinner');
+const form = document.getElementById('webpForm');
+
+// Click to upload
+dropZone.addEventListener('click', () => fileInput.click());
+
+// Drag events
+['dragenter', 'dragover'].forEach(evt => {
+    dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+});
+
+['dragleave', 'drop'].forEach(evt => {
+    dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+    });
+});
+
+dropZone.addEventListener('drop', e => {
+    if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        handleFileSelect(e.dataTransfer.files[0]);
+    }
+});
+
+fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) handleFileSelect(fileInput.files[0]);
+});
+
+function handleFileSelect(file) {
+    const ext = file.name.toLowerCase().split('.').pop();
+    
+    if (ext !== 'webp') {
+        fileInfo.innerHTML = '<span style="color: #ef4444;">❌ Only .webp files accepted</span>';
+        convertBtn.disabled = true;
+        previewArea.classList.remove('active');
+        return;
+    }
+    
+    if (file.size > 10 * 1024 * 1024) {
+        fileInfo.innerHTML = '<span style="color: #ef4444;">❌ File too large (max 10MB)</span>';
+        convertBtn.disabled = true;
+        previewArea.classList.remove('active');
+        return;
+    }
+
+    fileInfo.innerHTML = `📄 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+    convertBtn.disabled = false;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        previewImage.src = e.target.result;
+        fileDetails.textContent = `${file.name} • ${(file.size / 1024).toFixed(1)} KB`;
+        previewArea.classList.add('active');
+    };
+    reader.readAsDataURL(file);
+}
+
+// Format selection
+document.querySelectorAll('.format-option').forEach(option => {
+    option.addEventListener('click', function() {
+        document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input[type="radio"]').checked = true;
+    });
+});
+
+// Form submit
+form.addEventListener('submit', function(e) {
+    if (!fileInput.files.length) {
+        e.preventDefault();
+        return;
+    }
+    
+    convertBtn.disabled = true;
+    convertBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i><span>Converting...</span>';
+    spinner.classList.add('active');
+});
+
+// Auto-hide alerts
+document.querySelectorAll('.alert').forEach(alert => {
+    setTimeout(() => {
+        alert.style.transition = 'opacity 0.5s';
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 500);
+    }, 5000);
+});
+</script>
+{% endblock %}

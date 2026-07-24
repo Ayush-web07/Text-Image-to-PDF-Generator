@@ -1,0 +1,1094 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | AI PDF Studio Pro{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+/* ===== DASHBOARD - PREMIUM 3D GLASS CARDS ===== */
+.dashboard-section {
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Skeleton Loader */
+.skeleton-wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.skeleton-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 1.5rem;
+    animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    margin-bottom: 1rem;
+}
+
+.skeleton-line {
+    height: 14px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-line.short { width: 60%; }
+.skeleton-line.medium { width: 80%; }
+
+@keyframes skeletonPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.dashboard-content {
+    display: none;
+}
+
+.dashboard-content.loaded {
+    display: block;
+    animation: fadeInUp 0.6s ease;
+}
+
+/* Welcome Section */
+.welcome-section {
+    margin-bottom: 2rem;
+    animation: dashFadeUp 0.6s ease;
+}
+
+@keyframes dashFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.welcome-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.welcome-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.welcome-time {
+    text-align: right;
+    color: #cbd5e1;
+}
+
+.welcome-date {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.welcome-time-display {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #3b82f6;
+}
+
+/* Stats Grid - 3D Glass Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.dash-stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 1.5rem;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    animation: dashFadeUp 0.6s ease backwards;
+    backdrop-filter: blur(10px);
+}
+
+.dash-stat-card:nth-child(1) { animation-delay: 0.05s; }
+.dash-stat-card:nth-child(2) { animation-delay: 0.1s; }
+.dash-stat-card:nth-child(3) { animation-delay: 0.15s; }
+.dash-stat-card:nth-child(4) { animation-delay: 0.2s; }
+.dash-stat-card:nth-child(5) { animation-delay: 0.25s; }
+.dash-stat-card:nth-child(6) { animation-delay: 0.3s; }
+.dash-stat-card:nth-child(7) { animation-delay: 0.35s; }
+.dash-stat-card:nth-child(8) { animation-delay: 0.4s; }
+
+.dash-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.dash-stat-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    border-color: rgba(59, 130, 246, 0.2);
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15);
+}
+
+.dash-stat-card:hover::before {
+    opacity: 1;
+}
+
+.dash-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.dash-stat-card:hover .dash-stat-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.dash-stat-icon.pdf { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.dash-stat-icon.image { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.dash-stat-icon.text { background: linear-gradient(135deg, #10b981, #059669); }
+.dash-stat-icon.webp { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.dash-stat-icon.download { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+.dash-stat-icon.storage { background: linear-gradient(135deg, #ec4899, #db2777); }
+.dash-stat-icon.success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.dash-stat-icon.today { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+
+.dash-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
+    line-height: 1;
+}
+
+.dash-stat-label {
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+    animation: dashFadeUp 0.6s ease backwards;
+    animation-delay: 0.45s;
+}
+
+.dash-action-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 1.25rem 1rem;
+    text-decoration: none;
+    color: #e2e8f0;
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.625rem;
+    backdrop-filter: blur(10px);
+}
+
+.dash-action-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15);
+    color: #e2e8f0;
+}
+
+.dash-action-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #60a5fa;
+    transition: all 0.4s ease;
+}
+
+.dash-action-card:hover .dash-action-icon {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.25));
+    transform: scale(1.1);
+}
+
+.dash-action-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.dash-action-desc {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+/* Content Grid */
+.dash-content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Dashboard Glass Card */
+.dash-glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 1.75rem;
+    transition: all 0.4s ease;
+    animation: dashFadeUp 0.6s ease backwards;
+    animation-delay: 0.5s;
+    backdrop-filter: blur(10px);
+}
+
+.dash-glass-card:hover {
+    border-color: rgba(59, 130, 246, 0.15);
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.08);
+}
+
+.dash-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dash-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dash-card-title i {
+    color: #3b82f6;
+}
+
+.dash-card-action {
+    color: #60a5fa;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.dash-card-action:hover {
+    color: #93c5fd;
+}
+
+/* File Table */
+.dash-file-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.dash-file-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dash-file-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dash-file-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.dash-file-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.dash-file-table tbody tr:hover {
+    background: rgba(59, 130, 246, 0.04);
+}
+
+.dash-file-name {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    color: #e2e8f0;
+}
+
+.dash-file-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #60a5fa;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.dash-file-badge {
+    padding: 0.2rem 0.625rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.dash-badge-pdf { background: rgba(239, 68, 68, 0.12); color: #f87171; }
+.dash-badge-image { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
+.dash-badge-text { background: rgba(16, 185, 129, 0.12); color: #34d399; }
+.dash-badge-webp { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
+.dash-badge-other { background: rgba(148, 163, 184, 0.12); color: #94a3b8; }
+
+.dash-file-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.dash-btn-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.dash-btn-icon:hover {
+    background: #3b82f6;
+    color: #fff;
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+}
+
+.dash-btn-icon.danger:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+}
+
+/* Empty State */
+.dash-empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.dash-empty-icon {
+    font-size: 3.5rem;
+    color: #475569;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.dash-empty-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #e2e8f0;
+}
+
+.dash-empty-desc {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+/* Sidebar */
+.dash-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Profile Card */
+.dash-profile-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 1.75rem;
+    text-align: center;
+    animation: dashFadeUp 0.6s ease backwards;
+    animation-delay: 0.55s;
+    backdrop-filter: blur(10px);
+}
+
+.dash-profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.25rem;
+    color: #fff;
+    font-weight: 700;
+    margin: 0 auto 1rem;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.dash-profile-card:hover .dash-profile-avatar {
+    transform: scale(1.05) rotate(5deg);
+}
+
+.dash-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.dash-profile-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    color: #f1f5f9;
+}
+
+.dash-profile-email {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 0.75rem;
+}
+
+.dash-profile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.dash-profile-meta-item {
+    font-size: 0.75rem;
+    color: #64748b;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.3rem 0.75rem;
+    border-radius: 50px;
+}
+
+.dash-profile-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dash-profile-stat {
+    text-align: center;
+}
+
+.dash-profile-stat-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.15rem;
+}
+
+.dash-profile-stat-label {
+    font-size: 0.7rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Storage Card */
+.dash-storage-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 1.75rem;
+    animation: dashFadeUp 0.6s ease backwards;
+    animation-delay: 0.6s;
+    backdrop-filter: blur(10px);
+}
+
+.dash-storage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.dash-storage-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dash-storage-title i {
+    color: #3b82f6;
+}
+
+.dash-storage-value {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.dash-storage-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.dash-storage-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.dash-storage-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: dashShimmer 2s infinite;
+}
+
+@keyframes dashShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.dash-storage-fill.green { background: linear-gradient(90deg, #22c55e, #16a34a); }
+.dash-storage-fill.orange { background: linear-gradient(90deg, #f59e0b, #d97706); }
+.dash-storage-fill.red { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+.dash-storage-info {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* Activity Timeline */
+.dash-activity-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.dash-activity-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.dash-activity-item {
+    position: relative;
+    padding-bottom: 1.25rem;
+    animation: dashFadeUp 0.5s ease backwards;
+}
+
+.dash-activity-item:last-child {
+    padding-bottom: 0;
+}
+
+.dash-activity-item::before {
+    content: '';
+    position: absolute;
+    left: -1.5rem;
+    top: 0.35rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3b82f6;
+    border: 2px solid #0f172a;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+
+.dash-activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.4rem;
+    color: #60a5fa;
+    font-size: 0.9rem;
+}
+
+.dash-activity-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    margin-bottom: 0.15rem;
+}
+
+.dash-activity-time {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* Chart */
+.dash-chart-container {
+    position: relative;
+    height: 280px;
+    margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    .quick-actions {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .dash-content-grid {
+        grid-template-columns: 1fr;
+    }
+    .skeleton-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-section {
+        padding: 1rem;
+    }
+    .welcome-title {
+        font-size: 1.75rem;
+    }
+    .welcome-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .welcome-time {
+        text-align: left;
+    }
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    .dash-stat-card {
+        padding: 1rem;
+    }
+    .dash-stat-value {
+        font-size: 1.5rem;
+    }
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    .dash-file-table {
+        font-size: 0.8rem;
+    }
+    .dash-file-table th,
+    .dash-file-table td {
+        padding: 0.5rem;
+    }
+    .skeleton-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .quick-actions {
+        grid-template-columns: 1fr 1fr;
+    }
+    .skeleton-wrapper {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <!-- Skeleton Loader -->
+    <div class="skeleton-wrapper" id="skeletonLoader">
+        {% for i in "1234" %}
+        <div class="skeleton-card">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="dashboard-content" id="dashboardContent">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-header">
+                <div>
+                    <h1 class="welcome-title">Welcome back, {{ request.user.username }} 👋</h1>
+                    <p class="welcome-subtitle">Here's what's happening with your account today</p>
+                </div>
+                <div class="welcome-time">
+                    <div class="welcome-date" id="currentDate"></div>
+                    <div class="welcome-time-display" id="currentTime"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Grid (8 cards, no duplicates) -->
+        <div class="stats-grid">
+                <div class="dash-stat-card card-float animate-on-scroll">
+                    <div class="dash-stat-icon pdf"><i class="bi bi-file-earmark-pdf icon-rotate-hover"></i></div>
+                    <div class="dash-stat-value"><span class="dash-counter" data-target="{{ total_pdfs }}">0</span></div>
+                    <div class="dash-stat-label">Total PDFs</div>
+                </div>
+                <div class="dash-stat-card card-float animate-on-scroll">
+                    <div class="dash-stat-icon image"><i class="bi bi-image icon-rotate-hover"></i></div>
+                    <div class="dash-stat-value"><span class="dash-counter" data-target="{{ total_images }}">0</span></div>
+                    <div class="dash-stat-label">Images Converted</div>
+                </div>
+                <div class="dash-stat-card card-float animate-on-scroll">
+                    <div class="dash-stat-icon text"><i class="bi bi-file-text icon-rotate-hover"></i></div>
+                    <div class="dash-stat-value"><span class="dash-counter" data-target="{{ total_text }}">0</span></div>
+                    <div class="dash-stat-label">Text PDFs</div>
+                </div>
+                <div class="dash-stat-card card-float animate-on-scroll">
+                    <div class="dash-stat-icon webp"><i class="bi bi-arrows-angle-expand icon-rotate-hover"></i></div>
+                    <div class="dash-stat-value"><span class="dash-counter" data-target="{{ total_webp }}">0</span></div>
+                    <div class="dash-stat-label">WebP Converted</div>
+                </div>
+                <div class="dash-stat-card card-float animate-on-scroll">
+                    <div class="dash-stat-icon download"><i class="bi bi-download icon-rotate-hover"></i></div>
+                    <div class="dash-stat-value"><span class="dash-counter" data-target="{{ total_downloads }}">0</span></div>
+                    <div class="dash-stat-label">Downloads</div>
+                </div>
+                <div class="dash-stat-card card-float animate-on-scroll">
+                    <div class="dash-stat-icon storage"><i class="bi bi-database icon-rotate-hover"></i></div>
+                    <div class="dash-stat-value">{{ storage_display }}</div>
+                    <div class="dash-stat-label">Storage Used</div>
+                </div>
+                <div class="dash-stat-card card-float animate-on-scroll">
+                    <div class="dash-stat-icon success"><i class="bi bi-check-circle icon-rotate-hover"></i></div>
+                    <div class="dash-stat-value">{{ success_rate }}%</div>
+                    <div class="dash-stat-label">Success Rate</div>
+                </div>
+                <div class="dash-stat-card card-float animate-on-scroll">
+                    <div class="dash-stat-icon today"><i class="bi bi-calendar-check icon-rotate-hover"></i></div>
+                    <div class="dash-stat-value"><span class="dash-counter" data-target="{{ today_uploads }}">0</span></div>
+                    <div class="dash-stat-label">Today's Uploads</div>
+                </div>
+        </div>
+
+        <!-- Quick Actions (no duplicates) -->
+        <div class="quick-actions">
+            <a href="{% url 'image_to_pdf' %}" class="dash-action-card">
+                <div class="dash-action-icon"><i class="bi bi-image"></i></div>
+                <div class="dash-action-title">Image to PDF</div>
+                <div class="dash-action-desc">Convert images</div>
+            </a>
+            <a href="{% url 'text_to_pdf' %}" class="dash-action-card">
+                <div class="dash-action-icon"><i class="bi bi-fonts"></i></div>
+                <div class="dash-action-title">Text to PDF</div>
+                <div class="dash-action-desc">Create from text</div>
+            </a>
+            <a href="{% url 'webp_converter' %}" class="dash-action-card">
+                <div class="dash-action-icon"><i class="bi bi-arrows-angle-expand"></i></div>
+                <div class="dash-action-title">WebP Converter</div>
+                <div class="dash-action-desc">Convert formats</div>
+            </a>
+            <a href="{% url 'file_history' %}" class="dash-action-card">
+                <div class="dash-action-icon"><i class="bi bi-folder-fill"></i></div>
+                <div class="dash-action-title">File History</div>
+                <div class="dash-action-desc">View all files</div>
+            </a>
+            <a href="{% url 'dashboard' %}" class="dash-action-card">
+                <div class="dash-action-icon"><i class="bi bi-speedometer2"></i></div>
+                <div class="dash-action-title">Dashboard</div>
+                <div class="dash-action-desc">Overview</div>
+            </a>
+            <a href="{% url 'settings' %}" class="dash-action-card">
+                <div class="dash-action-icon"><i class="bi bi-gear"></i></div>
+                <div class="dash-action-title">Settings</div>
+                <div class="dash-action-desc">Customize</div>
+            </a>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="dash-content-grid">
+            <!-- Recent Files -->
+            <div class="dash-glass-card">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title"><i class="bi bi-folder-fill"></i> Recent Files</h3>
+                    <a href="{% url 'file_history' %}" class="dash-card-action">View All →</a>
+                </div>
+
+                {% if recent_files %}
+                <div class="dash-file-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Size</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in recent_files %}
+                            <tr>
+                                <td>
+                                    <div class="dash-file-name">
+                                        <div class="dash-file-icon">
+                                            <i class="bi bi-file-earmark-{% if file.file_type == 'pdf' %}pdf{% elif file.file_type in 'jpg jpeg png' %}image{% else %}file{% endif %}"></i>
+                                        </div>
+                                        {{ file.original_name|truncatechars:28 }}
+                                    </div>
+                                </td>
+                                <td>{{ file.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="dash-file-badge dash-badge-{% if file.file_type == 'pdf' %}pdf{% elif file.file_type in 'jpg jpeg png' %}image{% elif file.file_type == 'txt' %}text{% else %}other{% endif %}">
+                                        {{ file.file_type|upper }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if file.file_size > 1048576 %}
+                                        {{ file.file_size|filesizeformat }}
+                                    {% elif file.file_size > 1024 %}
+                                        {{ file.file_size|filesizeformat }}
+                                    {% else %}
+                                        {{ file.file_size|filesizeformat }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="dash-file-actions">
+                                        <a href="{% url 'view_pdf' file.id %}" target="_blank" class="dash-btn-icon" title="View" style="color:#22c55e;">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{% url 'download_pdf' file.id %}" class="dash-btn-icon" title="Download">
+                                            <i class="bi bi-download"></i>
+                                        </a>
+                                        <button class="dash-btn-icon danger" title="Delete" onclick="deleteFile('{{ file.id }}')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="dash-empty-state">
+                    <div class="dash-empty-icon">📁</div>
+                    <h4 class="dash-empty-title">No files yet</h4>
+                    <p class="dash-empty-desc">Start converting documents to see them here</p>
+                    <a href="{% url 'image_to_pdf' %}" class="btn btn-gradient-primary">
+                        <i class="bi bi-plus-circle"></i> Create Your First PDF
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="dash-sidebar">
+                <!-- Profile Card -->
+                <div class="dash-profile-card">
+                    <div class="dash-profile-avatar">
+                        {% if us and us.profile_pic %}
+                            <img src="{{ us.profile_pic.url }}" alt="Profile">
+                        {% else %}
+                            {{ request.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <h3 class="dash-profile-name">{{ request.user.username }}</h3>
+                    <p class="dash-profile-email">{{ request.user.email }}</p>
+                    <div class="dash-profile-meta">
+                        <span class="dash-profile-meta-item"><i class="bi bi-calendar3"></i> Joined {{ request.user.date_joined|date:"M Y" }}</span>
+                        <span class="dash-profile-meta-item"><i class="bi bi-clock"></i> Last login {{ request.user.last_login|timesince }} ago</span>
+                    </div>
+                    <div class="dash-profile-stats">
+                        <div class="dash-profile-stat">
+                            <div class="dash-profile-stat-value">{{ total_files }}</div>
+                            <div class="dash-profile-stat-label">Files</div>
+                        </div>
+                        <div class="dash-profile-stat">
+                            <div class="dash-profile-stat-value">{{ total_conversions }}</div>
+                            <div class="dash-profile-stat-label">Conversions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Storage Card -->
+                <div class="dash-storage-card">
+                    <div class="dash-storage-header">
+                        <div class="dash-storage-title"><i class="bi bi-cloud"></i> Storage</div>
+                        <div class="dash-storage-value">{{ storage_display }} / 100 MB</div>
+                    </div>
+                    <div class="dash-storage-bar">
+                        <div class="dash-storage-fill" data-pct="{{ storage_percent }}" style="width: 0%;"></div>
+                    </div>
+                    <div class="dash-storage-info">
+                        {% if storage_percent > 90 %}
+                            ⚠️ Critical - {{ storage_percent }}% used
+                        {% elif storage_percent > 70 %}
+                            ⚡ {{ storage_percent }}% of storage used
+                        {% else %}
+                            ✅ {{ storage_percent }}% of storage used
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Activity Timeline -->
+                <div class="dash-glass-card">
+                    <div class="dash-card-header">
+                        <h3 class="dash-card-title"><i class="bi bi-activity"></i> Recent Activity</h3>
+                    </div>
+                    {% if recent_activities %}
+                    <div class="dash-activity-timeline">
+                        {% for activity in recent_activities %}
+                        <div class="dash-activity-item">
+                            <div class="dash-activity-icon">
+                                <i class="bi bi-{% if activity.successful %}check-circle{% else %}x-circle{% endif %}"></i>
+                            </div>
+                            <div class="dash-activity-title">
+                                {% if activity.successful %}Login successful{% else %}Login failed{% endif %}
+                            </div>
+                            <div class="dash-activity-time">{{ activity.timestamp|timesince }} ago</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="dash-empty-state" style="padding:1.5rem">
+                        <div class="dash-empty-icon" style="font-size:2rem">📋</div>
+                        <p class="dash-empty-desc">No recent activity</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- System Status -->
+                <div class="dash-status-card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 20px; padding: 1.75rem; backdrop-filter: blur(10px);">
+                    <h3 class="dash-status-title" style="font-size: 1.05rem; font-weight: 600; color: #e2e8f0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;"><i class="bi bi-activity" style="color: #3b82f6;"></i> System Status</h3>
+                    <div class="dash-status-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
+                        <span class="dash-status-label" style="color: #94a3b8; font-size: 0.9rem;">Server</span>
+                        <span class="dash-status-value" style="color: #22c55e; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;"><span class="dash-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block;"></span> Online</span>
+                    </div>
+                    <div class="dash-status-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
+                        <span class="dash-status-label" style="color: #94a3b8; font-size: 0.9rem;">Database</span>
+                        <span class="dash-status-value" style="color: #22c55e; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;"><span class="dash-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block;"></span> Connected</span>
+                    </div>
+                    <div class="dash-status-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
+                        <span class="dash-status-label" style="color: #94a3b8; font-size: 0.9rem;">Storage</span>
+                        <span class="dash-status-value" style="color: #e2e8f0; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;"><span class="dash-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; display: inline-block;"></span> {{ storage_percent }}% used</span>
+                    </div>
+                    <div class="dash-status-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0;">
+                        <span class="dash-status-label" style="color: #94a3b8; font-size: 0.9rem;">Queue</span>
+                        <span class="dash-status-value" style="color: #22c55e; font-size: 0.85rem; display: flex; align-items: center; gap: 0.4rem;"><span class="dash-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block;"></span> Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Chart -->
+        <div class="dash-glass-card" style="animation-delay: 0.7s;">
+            <div class="dash-card-header">
+                <h3 class="dash-card-title"><i class="bi bi-graph-up"></i> Analytics - Last 7 Days</h3>
+            </div>
+            <div class="dash-chart-container">
+                <canvas id="analyticsChart" 
+                    data-chart='{{ chart_data|safe }}' 
+                    data-labels='{{ chart_labels|safe }}'>
+                </canvas>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}
