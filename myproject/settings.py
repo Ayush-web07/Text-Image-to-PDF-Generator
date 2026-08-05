@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-$blctps7u77p8a_m)5a4z9j(ki8=f8m1&r1j@8idc4$8qw9qq4
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Installed Apps
 
@@ -39,6 +39,7 @@ LOGOUT_REDIRECT_URL = 'login'
 # Middleware
 
 MIDDLEWARE = [
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
