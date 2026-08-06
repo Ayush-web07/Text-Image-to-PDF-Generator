@@ -1,15 +1,12 @@
 services:
   - type: web
     name: text-image-to-pdf-generator
-    runtime: python
+    env: python
 
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py collectstatic --noinput
-      python manage.py migrate
 
-    startCommand: gunicorn myproject.wsgi:application
-
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.10.11
+    startCommand: |
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      gunicorn myproject.wsgi:application
